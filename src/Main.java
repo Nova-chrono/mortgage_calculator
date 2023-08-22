@@ -2,6 +2,8 @@ import java.text.NumberFormat;
 import java.util.Scanner;
 
 public class Main {
+    final static byte PERCENT = 100;
+    final static byte MONTHS_IN_YEAR = 12;
     public static void main(String[] args) {
         // My First Java Project (Mortgage Calculator)
         int principal = (int) processInput("Principal: ", 1000, 1_000_000);
@@ -9,9 +11,19 @@ public class Main {
         byte years = (byte) processInput("Period (Years): ", 1, 30);
 
         double mortgage = calculateMortgage(principal, annualInterestRate, years);
-
         String mortgageResult = NumberFormat.getCurrencyInstance().format(mortgage);
-        System.out.println("Mortgage: " + mortgageResult);
+        System.out.println();
+        System.out.println("MORTGAGE");
+        System.out.println("--------");
+        System.out.println("Monthly Payment: " + mortgageResult);
+
+        System.out.println();
+        System.out.println("PAYMENT SCHEDULE");
+        System.out.println("----------------");
+        for (short month = 1; month <= years * MONTHS_IN_YEAR; month++) {
+            double balanceDue = calculateBalance(principal, annualInterestRate, years, month);
+            System.out.println(NumberFormat.getCurrencyInstance().format(balanceDue));
+        }
     }
     public static double processInput(String prompt, int min, int max) {
         Scanner scanner = new Scanner(System.in);
@@ -30,9 +42,6 @@ public class Main {
             float annualInterestRate,
             byte years) {
 
-        final byte PERCENT = 100;
-        final byte MONTHS_IN_YEAR = 12;
-
         float monthlyInterestRate = annualInterestRate / MONTHS_IN_YEAR / PERCENT;
         short numberOfMonths = (short)(years * MONTHS_IN_YEAR);
 
@@ -41,5 +50,21 @@ public class Main {
                 (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfMonths))
                 / (Math.pow(1 + monthlyInterestRate, numberOfMonths) - 1);
         return mortgage;
+    }
+    public static double calculateBalance(
+            int principal,
+            float annualInterestRate,
+            byte years,
+            short numberOfPaidMortgage) {
+
+        float monthlyInterestRate = annualInterestRate / MONTHS_IN_YEAR / PERCENT;
+        short numberOfMonths = (short)(years * MONTHS_IN_YEAR);
+
+        double balanceDue;
+        balanceDue = principal *
+                ((Math.pow(1 + monthlyInterestRate, numberOfMonths))
+                        - (Math.pow(1 + monthlyInterestRate, numberOfPaidMortgage)))
+                / (Math.pow(1 + monthlyInterestRate, numberOfMonths) - 1);
+        return balanceDue;
     }
 }
