@@ -10,13 +10,20 @@ public class Main {
         float annualInterestRate = (float) processInput("Annual Interest Rate: ", 1, 30);
         byte years = (byte) processInput("Period (Years): ", 1, 30);
 
+        printMortgage(principal, annualInterestRate, years);
+        printPaymentSchedule(principal, annualInterestRate, years);
+    }
+
+    private static void printMortgage(int principal, float annualInterestRate, byte years) {
         double mortgage = calculateMortgage(principal, annualInterestRate, years);
         String mortgageResult = NumberFormat.getCurrencyInstance().format(mortgage);
         System.out.println();
         System.out.println("MORTGAGE");
         System.out.println("--------");
         System.out.println("Monthly Payment: " + mortgageResult);
+    }
 
+    private static void printPaymentSchedule(int principal, float annualInterestRate, byte years) {
         System.out.println();
         System.out.println("PAYMENT SCHEDULE");
         System.out.println("----------------");
@@ -25,6 +32,7 @@ public class Main {
             System.out.println(NumberFormat.getCurrencyInstance().format(balanceDue));
         }
     }
+
     public static double processInput(String prompt, int min, int max) {
         Scanner scanner = new Scanner(System.in);
         double value;
@@ -37,6 +45,7 @@ public class Main {
         }
         return value;
     }
+
     public static double calculateMortgage(
             int principal,
             float annualInterestRate,
@@ -51,6 +60,7 @@ public class Main {
                 / (Math.pow(1 + monthlyInterestRate, numberOfMonths) - 1);
         return mortgage;
     }
+
     public static double calculateBalance(
             int principal,
             float annualInterestRate,
